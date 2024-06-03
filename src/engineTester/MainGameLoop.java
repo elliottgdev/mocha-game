@@ -15,11 +15,8 @@ import renderEngine.Loader;
 import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
-import models.OBJParser;
 
 public class MainGameLoop {
-
-	private static List<String> OBJ = null;
 
 	public static void main(String[] args) {
 		DisplayManager.createDisplay();
@@ -112,8 +109,6 @@ public class MainGameLoop {
 		 TexturedModel texturedModel = new TexturedModel(model,texture);
 		 Entity entity = new Entity(texturedModel, new Vector3f (0, 0, -10), 0, 0, 0, 1);
 		 Camera camera = new Camera();
-		
-		OBJParser.parseOBJ(OBJ);
 		
 		while(!Display.isCloseRequested()) {
 			entity.increaseRotation(1, 1, 1);
