@@ -3,7 +3,11 @@ package shaders;
 import org.lwjgl.util.vector.Matrix4f;
 
 import entities.Camera;
+import org.lwjgl.util.vector.Vector;
+import org.lwjgl.util.vector.Vector3f;
 import toolbox.Maths;
+
+import java.nio.FloatBuffer;
 
 public class StaticShader extends ShaderProgram {
 	private static final String VERTEX_FILE = "shaders/vertexShader.txt";
@@ -13,8 +17,8 @@ public class StaticShader extends ShaderProgram {
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
 	
-	public StaticShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+	public StaticShader(String vertex, String fragment) {
+		super("shaders/"+vertex+".txt", "shaders/"+fragment+".txt");
 	}
 	
 	@Override
@@ -29,6 +33,10 @@ public class StaticShader extends ShaderProgram {
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
+	}
+
+	public void setUniformVector(String uniform, Vector3f vector) {
+
 	}
 	
 	public void loadTransformationMatrix(Matrix4f matrix) {
