@@ -1,23 +1,20 @@
 package engineTester;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.util.vector.Vector3f;
-
 import entities.Camera;
 import entities.Entity;
 import models.RawModel;
 import models.TexturedModel;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector3f;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.OBJLoader;
 import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
+
+import java.io.FileNotFoundException;
 
 public class MainGameLoop {
 
@@ -26,7 +23,6 @@ public class MainGameLoop {
 		
 		Loader loader = new Loader();
 		StaticShader shader = new StaticShader("vertexShader", "fragmentShader");
-		StaticShader fullBright = new StaticShader("vertexShader", "fullbrightFragmentShader");
 		Renderer renderer = new Renderer(shader);
 
 		RawModel monkey = OBJLoader.loadOBJModel("monkey", loader);
@@ -45,22 +41,23 @@ public class MainGameLoop {
 		Camera camera = new Camera();
 		
 		while(!Display.isCloseRequested()) {
-			entity.increaseRotation(1, 1, 1);
-			//if (Keyboard.isKeyDown(Keyboard.KEY_UP)){
-			//	entity.increaseRotation(-1, 0, 0);
-			//}
-			//if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
-			//	entity.increaseRotation(1, 0, 0);
-			//}
-			//if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
-			//	entity.increaseRotation(0, -1, 0);
-			//}
-			//if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
-			//	entity.increaseRotation(0, 1, 0);
-			//}
+			//entity.increaseRotation(1, 1, 1);
+			if (Keyboard.isKeyDown(Keyboard.KEY_UP)){
+				entity.increaseRotation(-1, 0, 0);
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)){
+				entity.increaseRotation(1, 0, 0);
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)){
+				entity.increaseRotation(0, -1, 0);
+			}
+			if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)){
+				entity.increaseRotation(0, 1, 0);
+			}
 			renderer.prepare();
 			shader.start();
 			shader.loadViewMatrix(camera);
+			shader.setUniformVector("viewPos", camera.getPosition());
 			camera.move();
 			renderer.render(entity, shader);
 			shader.stop();
