@@ -9,8 +9,10 @@ public class Entity {
 	private Vector3f position;
 	private float rotX, rotY, rotZ;
 	private float scale;
-	public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
+	public String name;
+	public Entity(String name, TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		super();
+		this.name = name;
 		this.model = model;
 		this.position = position;
 		this.rotX = rotX;
