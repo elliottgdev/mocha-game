@@ -56,12 +56,12 @@ public class EntityManager {
                         String[] currentLine = line.split(" ");
 
                         if (line.startsWith("! ")){
-                            System.out.println(Arrays.asList(currentLine));
+                            //System.out.println(Arrays.asList(currentLine));
                             entName = currentLine[1];
                             entModel = currentLine[2];
                             entTexture = currentLine[3];
                         } else if (line.startsWith("@ ")) {
-                            System.out.println(Arrays.asList(currentLine));
+                            //System.out.println(Arrays.asList(currentLine));
                             String[] transformMemory;
                             transformMemory = currentLine[1].split(",");
                             position = new Vector3f(Float.parseFloat(transformMemory[0]), Float.parseFloat(transformMemory[1]), Float.parseFloat(transformMemory[2]));

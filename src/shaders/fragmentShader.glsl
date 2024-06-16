@@ -1,35 +1,37 @@
 #version 400 core
 
 in vec2 pass_textureCoords;
-in vec3 normal;
-out vec3 aNormal;
-in vec3 fragPos;
+in vec3 vertexNormal;
+in vec3 fragPosition;
 in vec3 colour;
 
 out vec4 out_Color;
+out vec3 aNormal;
+out vec3 lightColour;
 
 uniform sampler2D textureSampler;
-uniform vec3 lightPos;
+uniform vec3 lightPosition;
 uniform vec3 viewPos;
 
 void main(void){
-	float ambientStrength = 0.3;
-    vec3 ambient = ambientStrength * colour;
+    //the customizable stuff
+    lightColour = vec3(1, 1, 1);
+    float ambientStrength = 0.3;
     float specularStrength = 0.5;
+    float shininess = 4;
 
-    vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(vec3(0, 0, 2) - fragPos);
+    //everything becomes normal
+    vec3 normalizedNormal = normalize(vertexNormal);
+    vec3 lightDir = normalize(lightPosition - fragPosition);
+    vec3 viewDir = normalize(viewPos - fragPosition);
+    vec3 reflectDir = reflect(-lightDir, normalizedNormal);
 
-    vec3 lightColour = vec3(1, 1, 1);
+    //material calculations
+    vec3 ambient = ambientStrength * colour;
+    vec3 diffuse = max(dot(normalizedNormal, lightDir), 0.0) * lightColour;
+    vec3 specular = specularStrength * pow(max(dot(viewDir, reflectDir), 0.0), shininess) * lightColour;
 
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * lightColour;
-
-    vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 512);
-    vec3 specular = specularStrength * spec * lightColour;
-
+    //output
     vec3 result = (ambient + diffuse + specular) * vec3(1, 1, 1);
     out_Color = vec4(result, 1.0) * texture(textureSampler, pass_textureCoords);
 }

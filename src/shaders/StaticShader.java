@@ -19,7 +19,7 @@ public class StaticShader extends ShaderProgram {
 	
 	@Override
 	protected void bindAttributes() {
-		super.bindAttribute(0, "position");
+		super.bindAttribute(0, "vertexPosition");
 		super.bindAttribute(1, "textureCoords");
 	}
 
@@ -34,7 +34,17 @@ public class StaticShader extends ShaderProgram {
 	public void setUniformVector(String uniform, Vector3f vector) {
 		super.loadVector(super.getUniformLocation(uniform), vector);
 	}
-	
+
+	public void setUniformMatrix(String uniform, Matrix4f matrix4f) {
+		super.loadMatrix(super.getUniformLocation(uniform), matrix4f);
+	}
+
+	public Matrix4f getTransformationMatrix(){
+		Matrix4f matrix4f = new Matrix4f();
+		super.loadMatrix(location_transformationMatrix, matrix4f);
+		return matrix4f;
+	}
+
 	public void loadTransformationMatrix(Matrix4f matrix) {
 		super.loadMatrix(location_transformationMatrix, matrix);
 	}
