@@ -12,7 +12,6 @@ out vec3 colour;
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform mat4 inverseTransformationMatrix;
 
 void main(void){
 	//customizable stuff
@@ -23,7 +22,7 @@ void main(void){
 	fragPosition = vec3(transformationMatrix * vec4(vertexPosition, 1.0));
 
 	//normal calculation
-	vertexNormal = mat3(transpose(inverseTransformationMatrix) + transformationMatrix) * normal;
+	vertexNormal = mat3(transpose(inverse(transformationMatrix))) * normal;
 
 	//uvs
 	pass_textureCoords = textureCoords;
