@@ -111,12 +111,7 @@ public class EntityManager {
     public void renderEntities(){
         for (int i = 0; i < entities.size(); i++) {
             //apply material
-            shader.setUniformVector("material.ambient", ambient.get(i));
-            shader.setUniformVector("material.diffuse", diffuse.get(i));
-            shader.setUniformVector("material.specular", specular.get(i));
-            shader.setUniformFloat("material.shininess", shininess.get(i));
-            shader.setUniformFloat("material.shininess", shininess.get(i));
-            shader.setUniformBool("material.textured", textured.get(i));
+            shader.setMaterial(ambient.get(i), diffuse.get(i), specular.get(i), shininess.get(i), textured.get(i));
 
             //render
             renderer.render(entities.get(i), shader);

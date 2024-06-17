@@ -50,6 +50,14 @@ public class StaticShader extends ShaderProgram {
 		super.loadBoolean(super.getUniformLocation(uniform), bool);
 	}
 
+	public void setMaterial(Vector3f ambient, Vector3f diffuse, Vector3f specular, float shininess, Boolean textured){
+		setUniformVector("material.ambient", ambient);
+		setUniformVector("material.diffuse", diffuse);
+		setUniformVector("material.specular", specular);
+		setUniformFloat("material.shininess", shininess);
+		setUniformBool("material.textured", textured);
+	}
+
 	public void loadTransformationMatrix(Matrix4f matrix) {
 		super.loadMatrix(location_transformationMatrix, matrix);
 	}
