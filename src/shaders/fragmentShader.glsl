@@ -1,5 +1,20 @@
 #version 400 core
 
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+    bool textured;
+};
+
+struct Light {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
 in vec2 pass_textureCoords;
 in vec3 vertexNormal;
 in vec3 fragPosition;
@@ -7,31 +22,33 @@ in vec3 colour;
 
 out vec4 out_Color;
 out vec3 aNormal;
-out vec3 lightColour;
 
 uniform sampler2D textureSampler;
-uniform vec3 lightPosition;
 uniform vec3 viewPos;
+uniform Material material;
+uniform Light light;
 
 void main(void){
-    //the customizable stuff
-    lightColour = vec3(1, 1, 1);
-    float ambientStrength = 0.3;
-    float specularStrength = 0.5;
-    float shininess = 4;
+    //ambient
+    vec3 ambient = light.ambient * material.ambient;
 
-    //everything becomes normal
+    //diffuse
     vec3 normalizedNormal = normalize(vertexNormal);
-    vec3 lightDir = normalize(lightPosition - fragPosition);
+    vec3 lightDir = normalize(light.position - fragPosition);
+    float diffuseCalculations = max(dot(normalizedNormal, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * (diffuseCalculations * material.diffuse);
+
+    //specular
     vec3 viewDir = normalize(viewPos - fragPosition);
     vec3 reflectDir = reflect(-lightDir, normalizedNormal);
-
-    //material calculations
-    vec3 ambient = ambientStrength * colour;
-    vec3 diffuse = max(dot(normalizedNormal, lightDir), 0.0) * lightColour;
-    vec3 specular = specularStrength * pow(max(dot(viewDir, reflectDir), 0.0), shininess) * lightColour;
+    float specularCalculations = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * (specularCalculations * material.specular);
 
     //output
-    vec3 result = (ambient + diffuse + specular) * vec3(1, 1, 1);
-    out_Color = vec4(result, 1.0) * texture(textureSampler, pass_textureCoords);
+    vec3 result = ambient + diffuse + specular;
+
+    if (material.textured)
+        out_Color = vec4(result, 1.0) * texture(textureSampler, pass_textureCoords);
+    else
+        out_Color = vec4(result, 1.0);
 }

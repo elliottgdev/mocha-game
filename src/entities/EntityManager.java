@@ -13,15 +13,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class EntityManager {
     public List<Entity> entities = new ArrayList<>();
     Renderer renderer;
     StaticShader shader;
+
+    //material
+    List<Vector3f> ambient = new ArrayList<>();
+    List<Vector3f> diffuse = new ArrayList<>();
+    List<Vector3f> specular = new ArrayList<>();
+    List<Float> shininess = new ArrayList<>();
+    List<Boolean> textured = new ArrayList<>();
 
     public EntityManager(Renderer renderer, StaticShader shader, Loader loader){
         this.renderer = renderer;
@@ -46,6 +50,8 @@ public class EntityManager {
                 String entName = "PLACEHOLDER";
                 String entModel = "null";
                 String entTexture = "null";
+
+                //transform component
                 Vector3f position = new Vector3f(0, 0 ,0);
                 Vector3f rotation = new Vector3f(0, 0, 0);
                 float scale = 1;
@@ -68,11 +74,25 @@ public class EntityManager {
                             transformMemory = currentLine[2].split(",");
                             rotation = new Vector3f(Float.parseFloat(transformMemory[0]), Float.parseFloat(transformMemory[1]), Float.parseFloat(transformMemory[2]));
                             scale = Integer.parseInt(currentLine[3]);
+                        } else if (line.startsWith("# ")) {
+                            String[] matMemory;
+                            matMemory = currentLine[1].split(",");
+                            ambient.add(new Vector3f(Float.parseFloat(matMemory[0]), Float.parseFloat(matMemory[1]), Float.parseFloat(matMemory[2])));
+                            matMemory = currentLine[2].split(",");
+                            diffuse.add(new Vector3f(Float.parseFloat(matMemory[0]), Float.parseFloat(matMemory[1]), Float.parseFloat(matMemory[2])));
+                            matMemory = currentLine[3].split(",");
+                            specular.add(new Vector3f(Float.parseFloat(matMemory[0]), Float.parseFloat(matMemory[1]), Float.parseFloat(matMemory[2])));
+                            shininess.add(Float.parseFloat(currentLine[4]));
+                            textured.add(Boolean.parseBoolean(currentLine[5]));
                         } else if (line.startsWith("end ")){
                             RawModel rawModel = OBJLoader.loadOBJModel(entModel, loader);
                             ModelTexture modelTexture = new ModelTexture(loader.loadTexture(entTexture));
                             TexturedModel texturedModel = new TexturedModel(rawModel, modelTexture);
                             entities.add(new Entity(entName, texturedModel, position, rotation.x, rotation.y, rotation.z, scale));
+                            System.out.println(ambient);
+                            System.out.println(diffuse);
+                            System.out.println(specular);
+                            System.out.println(shininess);
                             break;
                         }
                     }
@@ -89,8 +109,18 @@ public class EntityManager {
     }
 
     public void renderEntities(){
-        for (Entity entity:entities)
-            renderer.render(entity, shader);
+        for (int i = 0; i < entities.size(); i++) {
+            //apply material
+            shader.setUniformVector("material.ambient", ambient.get(i));
+            shader.setUniformVector("material.diffuse", diffuse.get(i));
+            shader.setUniformVector("material.specular", specular.get(i));
+            shader.setUniformFloat("material.shininess", shininess.get(i));
+            shader.setUniformFloat("material.shininess", shininess.get(i));
+            shader.setUniformBool("material.textured", textured.get(i));
+
+            //render
+            renderer.render(entities.get(i), shader);
+        }
     }
 
     public int getEntityByName(String string){

@@ -1,9 +1,12 @@
 package shaders;
 
 import entities.Camera;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import toolbox.Maths;
+
+import static org.lwjgl.opengl.GL20.glGetUniform;
 
 public class StaticShader extends ShaderProgram {
 	private static final String VERTEX_FILE = "shaders/vertexShader.txt";
@@ -39,10 +42,12 @@ public class StaticShader extends ShaderProgram {
 		super.loadMatrix(super.getUniformLocation(uniform), matrix4f);
 	}
 
-	public Matrix4f getTransformationMatrix(){
-		Matrix4f matrix4f = new Matrix4f();
-		super.loadMatrix(location_transformationMatrix, matrix4f);
-		return matrix4f;
+	public void setUniformFloat(String uniform, float uFloat) {
+		super.loadFloat(super.getUniformLocation(uniform), uFloat);
+	}
+
+	public void setUniformBool(String uniform, Boolean bool) {
+		super.loadBoolean(super.getUniformLocation(uniform), bool);
 	}
 
 	public void loadTransformationMatrix(Matrix4f matrix) {
