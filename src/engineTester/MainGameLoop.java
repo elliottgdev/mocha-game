@@ -63,7 +63,7 @@ public class MainGameLoop {
 			shader.loadViewMatrix(camera);
 			shader.setUniformVector("viewPos", camera.getPosition());
 			camera.move();
-			shader.setMaterial(new Vector3f(0, 0.05f, 0), new Vector3f(0.4f, 0.5f, 0.4f), new Vector3f(0.04f, 0.7f, 0.04f), 0.078125f, true);
+			shader.setMaterial(new Vector3f(0, 0.5f, 0), new Vector3f(0.4f, 0.5f, 0.4f), new Vector3f(0.04f, 0.7f, 0.04f), 0.5f, true);
 			renderer.renderLevel(levelModel, shader);
 			entityManager.renderEntities();
 			shader.stop();

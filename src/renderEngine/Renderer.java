@@ -46,11 +46,6 @@ public class Renderer {
 		entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 
-		shader.setUniformVector("light.position", new Vector3f(0, 0, 20));
-		shader.setUniformVector("light.ambient", new Vector3f(0.2f, 0.2f, 0.2f));
-		shader.setUniformVector("light.diffuse", new Vector3f(0.5f, 0.5f, 0.5f));
-		shader.setUniformVector("light.specular", new Vector3f(1.0f, 1.0f, 1.0f));
-
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
 		GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
@@ -69,10 +64,10 @@ public class Renderer {
 				0, 0, 0, levelModel.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 
-		shader.setUniformVector("light.position", new Vector3f(0, 20, 0));
-		shader.setUniformVector("light.ambient", new Vector3f(0.2f, 0.2f, 0.2f));
-		shader.setUniformVector("light.diffuse", new Vector3f(0.5f, 0.5f, 0.5f));
-		shader.setUniformVector("light.specular", new Vector3f(1.0f, 1.0f, 1.0f));
+		shader.setUniformVector("light.direction", new Vector3f(-0.2f, -1, -0.3f));
+		shader.setUniformVector("light.ambient", new Vector3f(1f, 1f, 1f));
+		shader.setUniformVector("light.diffuse", new Vector3f(.5f, .5f, .5f));
+		shader.setUniformVector("light.specular", new Vector3f(0.2f, 0.2f, 0.2f));
 
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
