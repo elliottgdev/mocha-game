@@ -1,6 +1,7 @@
 package renderEngine;
 
 import entities.Entity;
+import models.LevelModel;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.opengl.*;
@@ -46,6 +47,29 @@ public class Renderer {
 		shader.loadTransformationMatrix(transformationMatrix);
 
 		shader.setUniformVector("light.position", new Vector3f(0, 0, 20));
+		shader.setUniformVector("light.ambient", new Vector3f(0.2f, 0.2f, 0.2f));
+		shader.setUniformVector("light.diffuse", new Vector3f(0.5f, 0.5f, 0.5f));
+		shader.setUniformVector("light.specular", new Vector3f(1.0f, 1.0f, 1.0f));
+
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
+		GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+		GL20.glDisableVertexAttribArray(0);
+		GL20.glDisableVertexAttribArray(1);
+		GL30.glBindVertexArray(0);
+	}
+
+	public void renderLevel(LevelModel levelModel, StaticShader shader){
+		TexturedModel model = levelModel.getModel();
+		RawModel rawModel = model.getRawModel();
+		GL30.glBindVertexArray(rawModel.getVaoID());
+		GL20.glEnableVertexAttribArray(0);
+		GL20.glEnableVertexAttribArray(1);
+		Matrix4f transformationMatrix = Maths.createTransformationMatrix(new Vector3f(0, 0, 0),
+				0, 0, 0, levelModel.getScale());
+		shader.loadTransformationMatrix(transformationMatrix);
+
+		shader.setUniformVector("light.position", new Vector3f(0, 20, 0));
 		shader.setUniformVector("light.ambient", new Vector3f(0.2f, 0.2f, 0.2f));
 		shader.setUniformVector("light.diffuse", new Vector3f(0.5f, 0.5f, 0.5f));
 		shader.setUniformVector("light.specular", new Vector3f(1.0f, 1.0f, 1.0f));

@@ -8,6 +8,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import models.TexturedModel;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -17,6 +18,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
 import models.RawModel;
+import textures.ModelTexture;
 
 public class Loader {
 	private List<Integer> vaos = new ArrayList<Integer>();
@@ -102,5 +104,12 @@ public class Loader {
 		buffer.put(data);
 		buffer.flip();
 		return buffer;
+	}
+
+	public TexturedModel createTexturedModel(String obj, String texture) throws FileNotFoundException {
+		Loader loader = new Loader();
+		RawModel rawModel = OBJLoader.loadOBJModel(obj, loader);
+		ModelTexture modelTexture = new ModelTexture(loadTexture(texture));
+		return new TexturedModel(rawModel, modelTexture);
 	}
 }

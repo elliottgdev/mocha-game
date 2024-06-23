@@ -4,6 +4,11 @@ import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
+import sun.awt.X11.XSystemTrayPeer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Maths {
 	public static Matrix4f createTransformationMatrix(Vector3f translation, float rx, float ry, float rz, float scale) {
@@ -26,5 +31,11 @@ public class Maths {
 		Vector3f negativeCameraPos = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 		return viewMatrix;
+	}
+
+	public static Vector3f giveVector3NormalPills(Vector3f vector3f){
+		float length = vector3f.x * vector3f.x + vector3f.y * vector3f.y + vector3f.z * vector3f.z;
+		length = (float) Math.sqrt(length);
+		return new Vector3f(vector3f.x / length, vector3f.y / length, vector3f.z / length);
 	}
 }

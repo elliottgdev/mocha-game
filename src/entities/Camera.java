@@ -25,6 +25,12 @@ public class Camera {
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			position.x+=speed;
 		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+			position.y-=speed;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+			position.y+=speed;
+		}
 	}
 
 	public float getPitch() {
