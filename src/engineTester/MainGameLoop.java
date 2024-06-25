@@ -8,10 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
-import renderEngine.DisplayManager;
-import renderEngine.Loader;
-import renderEngine.OBJLoader;
-import renderEngine.Renderer;
+import renderEngine.*;
 import shaders.StaticShader;
 
 import java.io.FileNotFoundException;
@@ -61,7 +58,11 @@ public class MainGameLoop {
 			renderer.prepare();
 			shader.start();
 			shader.loadViewMatrix(camera);
+
+			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(0, 0, 8), new Vector3f(0, 0, 8), new Vector3f(0, 0, 8), 1, 0.7f, 1.8f);
+			shader.setDirectionalLight(new Vector3f(-0.2f, -1, -0.3f), new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(.3f, .3f, .3f), new Vector3f(0.2f, 0.2f, 0.2f));
 			shader.setUniformVector("viewPos", camera.getPosition());
+
 			camera.move();
 			shader.setMaterial(new Vector3f(0, 0.5f, 0), new Vector3f(0.4f, 0.5f, 0.4f), new Vector3f(0.04f, 0.7f, 0.04f), 0.5f, true);
 			renderer.renderLevel(levelModel, shader);

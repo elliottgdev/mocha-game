@@ -64,11 +64,6 @@ public class Renderer {
 				0, 0, 0, levelModel.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);
 
-		shader.setUniformVector("light.direction", new Vector3f(-0.2f, -1, -0.3f));
-		shader.setUniformVector("light.ambient", new Vector3f(1f, 1f, 1f));
-		shader.setUniformVector("light.diffuse", new Vector3f(.5f, .5f, .5f));
-		shader.setUniformVector("light.specular", new Vector3f(0.2f, 0.2f, 0.2f));
-
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getID());
 		GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);

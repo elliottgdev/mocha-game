@@ -1,7 +1,6 @@
 package shaders;
 
 import entities.Camera;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 import toolbox.Maths;
@@ -56,6 +55,23 @@ public class StaticShader extends ShaderProgram {
 		setUniformVector("material.specular", specular);
 		setUniformFloat("material.shininess", shininess);
 		setUniformBool("material.textured", textured);
+	}
+
+	public void setDirectionalLight(Vector3f direction, Vector3f ambient, Vector3f diffuse, Vector3f specular){
+		setUniformVector("directionalLight.direction", direction);
+		setUniformVector("directionalLight.ambient", ambient);
+		setUniformVector("directionalLight.diffuse", diffuse);
+		setUniformVector("directionalLight.specular", specular);
+	}
+
+	public void setPointLight(int index, Vector3f position, Vector3f ambient, Vector3f diffuse, Vector3f specular, float constant, float linear, float quadratic){
+		setUniformVector("pointLight["+index+"].position", position);
+		setUniformVector("pointLight["+index+"].ambient", ambient);
+		setUniformVector("pointLight["+index+"].diffuse", diffuse);
+		setUniformVector("pointLight["+index+"].specular", specular);
+		setUniformFloat("pointLight["+index+"].constant", constant);
+		setUniformFloat("pointLight["+index+"].linear", linear);
+		setUniformFloat("pointLight["+index+"].quadratic", quadratic);
 	}
 
 	public void loadTransformationMatrix(Matrix4f matrix) {
