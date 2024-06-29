@@ -56,18 +56,20 @@ public class EntityManager {
                 Vector3f rotation = new Vector3f(0, 0, 0);
                 float scale = 1;
 
+                //other components
+
+
                 try {
                     while (true){
                         line = reader.readLine();
                         String[] currentLine = line.split(" ");
 
+
                         if (line.startsWith("! ")){
-                            //System.out.println(Arrays.asList(currentLine));
                             entName = currentLine[1];
                             entModel = currentLine[2];
                             entTexture = currentLine[3];
                         } else if (line.startsWith("@ ")) {
-                            //System.out.println(Arrays.asList(currentLine));
                             String[] transformMemory;
                             transformMemory = currentLine[1].split(",");
                             position = new Vector3f(Float.parseFloat(transformMemory[0]), Float.parseFloat(transformMemory[1]), Float.parseFloat(transformMemory[2]));
@@ -84,15 +86,13 @@ public class EntityManager {
                             specular.add(new Vector3f(Float.parseFloat(matMemory[0]), Float.parseFloat(matMemory[1]), Float.parseFloat(matMemory[2])));
                             shininess.add(Float.parseFloat(currentLine[4]));
                             textured.add(Boolean.parseBoolean(currentLine[5]));
+                        } else if (line.startsWith("$ ")) {
+                            //componentSystem.addComponent(, Component.player);
                         } else if (line.startsWith("end ")){
                             RawModel rawModel = OBJLoader.loadOBJModel(entModel, loader);
                             ModelTexture modelTexture = new ModelTexture(loader.loadTexture(entTexture));
                             TexturedModel texturedModel = new TexturedModel(rawModel, modelTexture);
                             entities.add(new Entity(entName, texturedModel, position, rotation.x, rotation.y, rotation.z, scale));
-                            System.out.println(ambient);
-                            System.out.println(diffuse);
-                            System.out.println(specular);
-                            System.out.println(shininess);
                             break;
                         }
                     }
@@ -100,12 +100,15 @@ public class EntityManager {
                     e.printStackTrace();
                 }
             }
-        } else {
-            // Handle the case where dir is not really a directory.
-            // Checking dir.isDirectory() above would not be sufficient
-            // to avoid race conditions with another process that deletes
-            // directories.
         }
+    }
+
+    public void update(){
+
+    }
+
+    public void addComponent(String component){
+
     }
 
     public void renderEntities(){

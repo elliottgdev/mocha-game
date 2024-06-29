@@ -50,6 +50,7 @@ public class MainGameLoop {
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			}
 
+			entityManager.update();
 			spinner.increaseRotation(1, 1, 1);
 
 			renderer.prepare();
