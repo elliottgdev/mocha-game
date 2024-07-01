@@ -1,8 +1,12 @@
 package entities;
 
+import components.Component;
 import org.lwjgl.util.vector.Vector3f;
 
 import models.TexturedModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Entity {
 	private TexturedModel model;
@@ -10,6 +14,8 @@ public class Entity {
 	private float rotX, rotY, rotZ;
 	private float scale;
 	public String name;
+	private List<Component> components = new ArrayList<>();
+
 	public Entity(String name, TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		super();
 		this.name = name;
@@ -20,7 +26,17 @@ public class Entity {
 		this.rotZ = rotZ;
 		this.scale = scale;
 	}
-	
+
+	public void update(){
+		for (Component component : components){
+			component.update(this);
+		}
+	}
+
+	public void addComponent(Component component){
+		components.add(component);
+	}
+
 	public void increasePosition(float dx, float dy, float dz) {
 		this.position.x +=dx;
 		this.position.y +=dy;

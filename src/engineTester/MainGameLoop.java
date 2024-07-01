@@ -29,8 +29,8 @@ public class MainGameLoop {
 
 		Camera camera = new Camera();
 		List<GUITexture> guis = new ArrayList<>();
-		GUITexture gui = new GUITexture(loader.loadTexture("test"), new Vector2f(0, 0), new Vector2f(0.25f, 0.25f));
-		GUITexture guiTransparent = new GUITexture(loader.loadTexture("mrtransparn"), new Vector2f(0.25f, 0), new Vector2f(0.25f, 0.25f));
+		GUITexture gui = new GUITexture(loader.loadTexture("test"), new Vector2f(0, 0.5f), new Vector2f(0.25f, 0.25f));
+		GUITexture guiTransparent = new GUITexture(loader.loadTexture("mrtransparn"), new Vector2f(0.25f, 0.5f), new Vector2f(0.25f, 0.25f));
 		guis.add(gui);
 		guis.add(guiTransparent);
 		GUIRenderer guiRenderer = new GUIRenderer(loader);
@@ -51,7 +51,6 @@ public class MainGameLoop {
 			}
 
 			entityManager.update();
-			spinner.increaseRotation(1, 1, 1);
 
 			renderer.prepare();
 			shader.start();

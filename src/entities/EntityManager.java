@@ -1,5 +1,6 @@
 package entities;
 
+import components.Component;
 import models.RawModel;
 import models.TexturedModel;
 import org.lwjgl.util.vector.Vector3f;
@@ -57,7 +58,7 @@ public class EntityManager {
                 float scale = 1;
 
                 //other components
-
+                List<Component> componentsToAdd = new ArrayList<>();
 
                 try {
                     while (true){
@@ -87,12 +88,16 @@ public class EntityManager {
                             shininess.add(Float.parseFloat(currentLine[4]));
                             textured.add(Boolean.parseBoolean(currentLine[5]));
                         } else if (line.startsWith("$ ")) {
-                            //componentSystem.addComponent(, Component.player);
+                            componentsToAdd.add(getComponent(currentLine[1]));
                         } else if (line.startsWith("end ")){
                             RawModel rawModel = OBJLoader.loadOBJModel(entModel, loader);
                             ModelTexture modelTexture = new ModelTexture(loader.loadTexture(entTexture));
                             TexturedModel texturedModel = new TexturedModel(rawModel, modelTexture);
-                            entities.add(new Entity(entName, texturedModel, position, rotation.x, rotation.y, rotation.z, scale));
+                            Entity entity = new Entity(entName, texturedModel, position, rotation.x, rotation.y, rotation.z, scale);
+                            for (Component component : componentsToAdd){
+                                entity.addComponent(component);
+                            }
+                            entities.add(entity);
                             break;
                         }
                     }
@@ -104,11 +109,20 @@ public class EntityManager {
     }
 
     public void update(){
-
+        for (Entity entity : entities){
+            entity.update();
+        }
     }
 
-    public void addComponent(String component){
-
+    private Component getComponent(String component) {
+        System.out.println(component);
+        try {
+            Class<?> _class = Class.forName("components." + component);
+            return (Component) _class.getDeclaredConstructor().newInstance();
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void renderEntities(){
