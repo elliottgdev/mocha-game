@@ -41,10 +41,4 @@ public class Maths {
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 		return viewMatrix;
 	}
-
-	public static Vector3f giveVector3NormalPills(Vector3f vector3f){
-		float length = vector3f.x * vector3f.x + vector3f.y * vector3f.y + vector3f.z * vector3f.z;
-		length = (float) Math.sqrt(length);
-		return new Vector3f(vector3f.x / length, vector3f.y / length, vector3f.z / length);
-	}
 }

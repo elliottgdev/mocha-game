@@ -14,7 +14,7 @@ public class Entity {
 	private float rotX, rotY, rotZ;
 	private float scale;
 	public String name;
-	private List<Component> components = new ArrayList<>();
+	private final List<Component> components = new ArrayList<>();
 
 	public Entity(String name, TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		super();

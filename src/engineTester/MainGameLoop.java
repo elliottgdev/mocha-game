@@ -15,6 +15,7 @@ import renderEngine.*;
 import shaders.StaticShader;
 
 import java.io.FileNotFoundException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class MainGameLoop {
 
 	public static void main(String[] args) throws FileNotFoundException {
 		DisplayManager.createDisplay();
-		
+
 		Loader loader = new Loader();
 		StaticShader shader = new StaticShader("vertexShader", "fragmentShader");
 		Renderer renderer = new Renderer(shader);
@@ -35,7 +36,6 @@ public class MainGameLoop {
 		guis.add(guiTransparent);
 		GUIRenderer guiRenderer = new GUIRenderer(loader);
 		EntityManager entityManager = new EntityManager(renderer, shader, loader);
-		Entity spinner = entityManager.entities.get(entityManager.getEntityByName("test2"));
 
 		LevelModel levelModel = new LevelModel(loader.createTexturedModel("level", "grass"), 1);
 
@@ -56,11 +56,10 @@ public class MainGameLoop {
 			shader.start();
 			shader.loadViewMatrix(camera);
 
-			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(0, 0, 8), new Vector3f(0, 0, 8), new Vector3f(0, 0, 8), 1, 0.7f, 1.8f);
-			shader.setDirectionalLight(new Vector3f(-0.2f, -1, -0.3f), new Vector3f(0.6f, 0.6f, 0.6f), new Vector3f(.3f, .3f, .3f), new Vector3f(0.2f, 0.2f, 0.2f));
+			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), 1, 0.7f, 1.8f);
+			shader.setDirectionalLight(new Vector3f(-0.2f, -1, -0.3f), new Vector3f(0.6f, 0.6f, 0.9f), new Vector3f(.3f, .3f, .5f), new Vector3f(0.2f, 0.2f, 0.2f));
 			shader.setUniformVector("viewPos", camera.getPosition());
 
-			camera.move();
 			shader.setMaterial(new Vector3f(0, 0.5f, 0), new Vector3f(0.4f, 0.5f, 0.4f), new Vector3f(0.04f, 0.7f, 0.04f), 0.5f, true);
 			renderer.renderLevel(levelModel, shader);
 			entityManager.renderEntities();
@@ -70,9 +69,11 @@ public class MainGameLoop {
 		}
 
 		guiRenderer.cleanUp();
+		try{
+
+		} catch (Exception e){}
 		shader.cleanUp();
 		loader.cleanUp();
 		DisplayManager.closeDisplay();
 	}
-
 }
