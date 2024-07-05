@@ -44,7 +44,7 @@ public class EntityManager {
                     e.printStackTrace();
                 }
 
-                String line = " ads";
+                String line;
                 BufferedReader reader = new BufferedReader(fr);
 
                 //entity base component
@@ -64,7 +64,6 @@ public class EntityManager {
                     while (true){
                         line = reader.readLine();
                         String[] currentLine = line.split(" ");
-
 
                         if (line.startsWith("! ")){
                             entName = currentLine[1];
@@ -89,13 +88,14 @@ public class EntityManager {
                             textured.add(Boolean.parseBoolean(currentLine[5]));
                         } else if (line.startsWith("$ ")) {
                             componentsToAdd.add(getComponent(currentLine[1]));
-                        } else if (line.startsWith("end ")){
+                        } else if (line.startsWith("end")){
                             RawModel rawModel = OBJLoader.loadOBJModel(entModel, loader);
                             ModelTexture modelTexture = new ModelTexture(loader.loadTexture(entTexture));
                             TexturedModel texturedModel = new TexturedModel(rawModel, modelTexture);
                             Entity entity = new Entity(entName, texturedModel, position, rotation.x, rotation.y, rotation.z, scale);
                             for (Component component : componentsToAdd){
                                 entity.addComponent(component);
+                                entity.getComponent(component).awake(entity);
                             }
                             entities.add(entity);
                             break;

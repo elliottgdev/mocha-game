@@ -13,6 +13,12 @@ public class Player implements Component {
     public float jumpVelocity = 0.17f;
 
     public boolean grounded = false;
+
+    @Override
+    public void awake(Entity entity) {
+
+    }
+
     @Override
     public void update(Entity entity) {
         boolean up = false, down = false, left = false, right = false;

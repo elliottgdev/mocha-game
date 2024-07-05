@@ -1,4 +1,5 @@
 import entities.Camera;
+import entities.Entity;
 import entities.EntityManager;
 import guis.GUIRenderer;
 import guis.GUITexture;
@@ -31,13 +32,11 @@ public class MainGameLoop {
 		guis.add(guiTransparent);
 		GUIRenderer guiRenderer = new GUIRenderer(loader);
 		EntityManager entityManager = new EntityManager(renderer, shader, loader);
+		Entity player = entityManager.entities.get(entityManager.getEntityByName("test"));
 
 		while(!Display.isCloseRequested()) {
-			Boolean renderWireframe = false;
-			if (Keyboard.isKeyDown(Keyboard.KEY_TAB)){
-				renderWireframe = true;
-			}
-			if (renderWireframe){
+			boolean renderWireframe = Keyboard.isKeyDown(Keyboard.KEY_TAB);
+            if (renderWireframe){
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 			} else{
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
@@ -49,11 +48,14 @@ public class MainGameLoop {
 			shader.start();
 			shader.loadViewMatrix(camera);
 
+			camera.getPosition().x = player.getPosition().x;
+			camera.getPosition().y = player.getPosition().y + 16;
+			camera.getPosition().z = player.getPosition().z + 20;
+
 			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), 1, 0.7f, 1.8f);
 			shader.setDirectionalLight(new Vector3f(-0.2f, -1, -0.3f), new Vector3f(0.6f, 0.6f, 0.9f), new Vector3f(.3f, .3f, .5f), new Vector3f(0.2f, 0.2f, 0.2f));
 			shader.setUniformVector("viewPos", camera.getPosition());
 
-			shader.setMaterial(new Vector3f(0, 0.5f, 0), new Vector3f(0.4f, 0.5f, 0.4f), new Vector3f(0.04f, 0.7f, 0.04f), 0.5f, true);
 			entityManager.renderEntities();
 			//guiRenderer.render(guis);
 			shader.stop();

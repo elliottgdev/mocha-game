@@ -14,7 +14,7 @@ public class Entity {
 	private float rotX, rotY, rotZ;
 	private float scale;
 	public String name;
-	private final List<Component> components = new ArrayList<>();
+	public final List<Component> components = new ArrayList<>();
 
 	public Entity(String name, TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		super();
@@ -35,6 +35,10 @@ public class Entity {
 
 	public void addComponent(Component component){
 		components.add(component);
+	}
+
+	public Component getComponent(Component component){
+		return component;
 	}
 
 	public void increasePosition(float dx, float dy, float dz) {
