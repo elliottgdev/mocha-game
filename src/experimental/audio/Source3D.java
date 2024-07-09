@@ -8,9 +8,9 @@ public class Source3D {
 
     public Source3D(){
         sourceId = AL10.alGenSources();
-        AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, 0);
-        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 10);
-        AL10.alSourcef(sourceId, AL10.AL_MAX_DISTANCE, 20);
+        AL10.alSourcef(sourceId, AL10.AL_ROLLOFF_FACTOR, 1);
+        AL10.alSourcef(sourceId, AL10.AL_REFERENCE_DISTANCE, 0);
+        AL10.alSourcef(sourceId, AL10.AL_MAX_DISTANCE, 30);
     }
 
     public void setVolume(float volume){

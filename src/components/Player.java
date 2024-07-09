@@ -69,6 +69,7 @@ public class Player implements Component {
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && grounded){
+            entity.getComponent(AudioSource.class).play("res/bounce.wav");
             velocity = jumpVelocity;
         }
     }

@@ -20,6 +20,11 @@ public class SourcePool {
         }
     }
 
+    public static SourcePool sourcePool = new SourcePool(10);
+    public static SourcePool getSourcePool(){
+        return sourcePool;
+    }
+
     public void playBufferOnSourcePool(String buffer, Vector3f position, float pitch, float volume, Pool pool){
         Source3D source3D;
         updatePool();
@@ -29,10 +34,15 @@ public class SourcePool {
                     source3D = freeEntityPool.get(0);
                     freeEntityPool.remove(0);
                     occupiedEntityPool.add(source3D);
-                    occupiedEntityPool.get(occupiedEntityPool.indexOf(source3D)).play(Audio.loadSound(buffer));
+
+                    Source3D sourceCache = occupiedEntityPool.get(occupiedEntityPool.indexOf(source3D));
+                    sourceCache.setPosition(position);
+                    sourceCache.setPitch(pitch);
+                    sourceCache.setVolume(volume);
+                    sourceCache.play(Audio.loadSound(buffer));
                     break;
                 default:
-                    System.out.println("ya fucked up. not adding buffer to source pool.");
+                    System.out.println("something went wacko wrong. source pool error");
                     break;
             }
         } catch (IndexOutOfBoundsException e){

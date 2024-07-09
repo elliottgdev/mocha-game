@@ -41,6 +41,15 @@ public class Entity {
 		return component;
 	}
 
+	public <T extends Component> T getComponent(Class<T> componentClass) {
+		for (Component component : components) {
+			if (componentClass.isInstance(component)) {
+				return componentClass.cast(component);
+			}
+		}
+		return null;
+	}
+
 	public void increasePosition(float dx, float dy, float dz) {
 		this.position.x +=dx;
 		this.position.y +=dy;

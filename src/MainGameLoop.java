@@ -34,14 +34,14 @@ public class MainGameLoop {
 
 		Camera camera = new Camera();
 		List<GUITexture> guis = new ArrayList<>();
-		GUITexture gui = new GUITexture(loader.loadTexture("test"), new Vector2f(0, 0.5f), new Vector2f(0.25f, 0.25f));
-		GUITexture guiTransparent = new GUITexture(loader.loadTexture("mrtransparn"), new Vector2f(0.25f, 0.5f), new Vector2f(0.25f, 0.25f));
+		GUITexture gui = new GUITexture(loader.loadTexture("test"), new Vector2f(-0.05f, 0.9f), new Vector2f(0.1f, 0.1f));
+		GUITexture guiTransparent = new GUITexture(loader.loadTexture("mrtransparn"), new Vector2f(0.05f, 0.9f), new Vector2f(0.1f, 0.1f));
 		guis.add(gui);
 		guis.add(guiTransparent);
 		GUIRenderer guiRenderer = new GUIRenderer(loader);
 		EntityManager entityManager = new EntityManager(renderer, shader, loader);
 		Entity player = entityManager.entities.get(entityManager.getEntityByName("test"));
-		SourcePool sourcePool = new SourcePool(5);
+		SourcePool sourcePool = SourcePool.getSourcePool();
 		sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(3, 0, 3), 1, 1, Pool.entity);
 
 		while(!Display.isCloseRequested()) {
@@ -52,7 +52,7 @@ public class MainGameLoop {
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			}
 
-			if(Keyboard.isKeyDown(Keyboard.KEY_TAB))
+			if(Keyboard.isKeyDown(Keyboard.KEY_Q))
 				sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(2, 0, 3), 1, 1, Pool.entity);
 
 			entityManager.update();
@@ -71,7 +71,7 @@ public class MainGameLoop {
 			shader.setUniformVector("viewPos", camera.getPosition());
 
 			entityManager.renderEntities();
-			//guiRenderer.render(guis);
+			guiRenderer.render(guis);
 			shader.stop();
 			DisplayManager.updateDisplay();
 		}
