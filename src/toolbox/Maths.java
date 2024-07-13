@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
+import org.lwjgl.util.vector.Vector4f;
 import sun.awt.X11.XSystemTrayPeer;
 
 import java.util.ArrayList;
@@ -40,5 +41,23 @@ public class Maths {
 		Vector3f negativeCameraPos = new Vector3f(-cameraPos.x,-cameraPos.y,-cameraPos.z);
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 		return viewMatrix;
+	}
+
+	//this is all sebastion lague https://www.youtube.com/watch?v=HYAgJN3x4GA watch to understand :)
+	public static boolean pointTriangleIntersection(Vector2f a, Vector2f b, Vector2f c, Vector2f p){
+		Vector4f s = new Vector4f();
+		s.x = c.y - a.y;
+		s.y = c.x - a.x;
+		s.z = b.y - a.y;
+		s.w = p.y - a.y;
+
+		Vector2f w = new Vector2f();
+		w.x = (a.x * s.x + s.w * s.y - p.x * s.x) / (s.z * s.y - (b.x-a.x) * s.x);
+		w.y = (s.w- w.x * s.z) / s.x;
+
+		if (w.x >= 0 && w.y >= 0 && (w.x + w.y) <= 1)
+			return true;
+		else
+			return false;
 	}
 }

@@ -1,7 +1,9 @@
 package components;
 
 import entities.Entity;
+import experimental.levels.Level;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.util.vector.Vector2f;
 
 import java.security.Key;
 
@@ -40,6 +42,7 @@ public class Player implements Component {
             right = true;
         }
 
+        floorHeight = Level.getFloorHeight(new Vector2f(entity.getPosition().x, entity.getPosition().z));
 
         if (up && left && !right && !down){
             entity.setRotY(225);

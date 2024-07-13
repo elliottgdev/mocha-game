@@ -54,6 +54,8 @@ public class MainGameLoop {
 
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q))
 				sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(2, 0, 3), 1, 1, Pool.entity);
+			if(Keyboard.isKeyDown(Keyboard.KEY_E))
+				sourcePool.playBufferOnSourcePool("res/AudioJungle.wav", new Vector3f(2, 0, 3), 1, 1, Pool.entity);
 
 			entityManager.update();
 
