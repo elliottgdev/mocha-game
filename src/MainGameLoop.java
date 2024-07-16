@@ -4,6 +4,7 @@ import entities.EntityManager;
 import experimental.audio.Audio;
 import experimental.audio.Pool;
 import experimental.audio.SourcePool;
+import experimental.levels.Level;
 import guis.GUIRenderer;
 import guis.GUITexture;
 import org.lwjgl.input.Keyboard;
@@ -43,6 +44,7 @@ public class MainGameLoop {
 		Entity player = entityManager.entities.get(entityManager.getEntityByName("test"));
 		SourcePool sourcePool = SourcePool.getSourcePool();
 		sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(3, 0, 3), 1, 1, Pool.entity);
+		Level.generateSectorModels(loader);
 
 		while(!Display.isCloseRequested()) {
 			boolean renderWireframe = Keyboard.isKeyDown(Keyboard.KEY_TAB);
@@ -71,7 +73,7 @@ public class MainGameLoop {
 			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), 1, 0.7f, 1.8f);
 			shader.setDirectionalLight(new Vector3f(-0.2f, -1, -0.3f), new Vector3f(0.6f, 0.6f, 0.9f), new Vector3f(.3f, .3f, .5f), new Vector3f(0.2f, 0.2f, 0.2f));
 			shader.setUniformVector("viewPos", camera.getPosition());
-
+			Level.renderSectorModel(renderer, shader);
 			entityManager.renderEntities();
 			guiRenderer.render(guis);
 			shader.stop();
