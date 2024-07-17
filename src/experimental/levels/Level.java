@@ -16,8 +16,10 @@ import static toolbox.Maths.pointTriangleIntersection;
 
 public class Level {
     static Sector[] sectors = {
-            new Sector(new Vector2f(0, 3), new Vector2f(0, 0), new Vector2f(12, 3), new Vector2f(12, 0), 1f),
-            new Sector(new Vector2f(0, 0), new Vector2f(0, -3), new Vector2f(12, 0), new Vector2f(12, -3), 2f)
+            new Sector(new Vector2f(0, 3), new Vector2f(0, 0), new Vector2f(12, 3), new Vector2f(12, 0), 0.5f, 7f),
+            new Sector(new Vector2f(0, 0), new Vector2f(0, -3), new Vector2f(12, 0), new Vector2f(12, -3), 1.5f, 7f),
+            new Sector(new Vector2f(-4, 0), new Vector2f(-4, -3), new Vector2f(0, 0), new Vector2f(0, -3), 4f, 7f),
+            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 7f),
     };
     private static List<float[]> positions = new ArrayList<>();
     private static List<float[]> uvs = new ArrayList<>();
@@ -49,6 +51,7 @@ public class Level {
                     sectors[i].normals[1].x, sectors[i].normals[1].y, sectors[i].normals[1].z,
                     sectors[i].normals[2].x, sectors[i].normals[2].y, sectors[i].normals[2].z,
                     sectors[i].normals[3].x, sectors[i].normals[3].y, sectors[i].normals[3].z,
+
             });
             index.add(new int[]{
                     0, 2, 1,
@@ -66,15 +69,17 @@ public class Level {
         }
     }
 
-    public static float getFloorHeight(Vector2f position){
+    public static Vector2f getFloorHeight(Vector2f position){
         float height = 0;
+        float ceilingHeight = 3;
         for (Sector sector : sectors){
             if (pointTriangleIntersection(sector.v1, sector.v0, sector.v2, position) || pointTriangleIntersection(sector.v2, sector.v1, sector.v3, position)) {
                 height = sector.floorHeight;
+                ceilingHeight = sector.ceilingHeight;
                 break;
             }
         }
-        return height;
+        return new Vector2f(height, ceilingHeight);
     }
 }
 
@@ -85,6 +90,7 @@ class Sector {
     public final Vector2f v3;
 
     public float floorHeight;
+    public float ceilingHeight;
 
     public final int[][] index = {
         {0, 1, 2},
@@ -93,12 +99,13 @@ class Sector {
 
     public final Vector3f[] normals;
 
-    public Sector(Vector2f v0, Vector2f v1, Vector2f v2, Vector2f v3, float floorHeight){
+    public Sector(Vector2f v0, Vector2f v1, Vector2f v2, Vector2f v3, float floorHeight, float ceilingHeight){
         this.v0 = v0;
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
         this.floorHeight = floorHeight;
+        this.ceilingHeight = ceilingHeight;
 
         normals = new Vector3f[4];
         for (int i = 0; i < normals.length; i++) {
@@ -106,9 +113,9 @@ class Sector {
         }
 
         Vector3f[] edge = {
-            new Vector3f(v1.x - v2.x, v1.y - v2.y, 0),
-            new Vector3f(v1.x - v0.x, v1.y - v0.y, 0),
-            new Vector3f(v3.x - v2.x, v3.y - v2.y, 0),
+            new Vector3f(v1.x - v2.x, 0,v1.y - v2.y),
+            new Vector3f(v1.x - v0.x, 0,v1.y - v0.y),
+            new Vector3f(v3.x - v2.x, 0,v3.y - v2.y),
         };
 
         Vector3f triangle1norm = new Vector3f(
