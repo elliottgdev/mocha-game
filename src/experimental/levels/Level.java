@@ -9,6 +9,7 @@ import renderEngine.Renderer;
 import shaders.StaticShader;
 import textures.ModelTexture;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +17,10 @@ import static toolbox.Maths.pointTriangleIntersection;
 
 public class Level {
     static Sector[] sectors = {
-            new Sector(new Vector2f(0, 3), new Vector2f(0, 0), new Vector2f(12, 3), new Vector2f(12, 0), 0.5f, 7f),
-            new Sector(new Vector2f(0, 0), new Vector2f(0, -3), new Vector2f(12, 0), new Vector2f(12, -3), 1.5f, 7f),
-            new Sector(new Vector2f(-4, 0), new Vector2f(-4, -3), new Vector2f(0, 0), new Vector2f(0, -3), 4f, 7f),
-            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 7f),
+            new Sector(new Vector2f(0, 3), new Vector2f(0, 0), new Vector2f(12, 3), new Vector2f(12, 0), 0.5f, 7f, "test", false ,SectorType.sector_static),
+            new Sector(new Vector2f(0, 0), new Vector2f(0, -3), new Vector2f(12, 0), new Vector2f(12, -3), 1.5f, 7f, "grass", true, SectorType.sector_static),
+            new Sector(new Vector2f(-4, 0), new Vector2f(-4, -3), new Vector2f(0, 0), new Vector2f(0, -3), 4f, 7f, "test", true, SectorType.sector_static),
+            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 1.5f, "null", false, SectorType.sector_static),
     };
     private static List<float[]> positions = new ArrayList<>();
     private static List<float[]> uvs = new ArrayList<>();
@@ -40,12 +41,21 @@ public class Level {
                     sectors[i].v2.x, sectors[i].floorHeight, sectors[i].v2.y,
                     sectors[i].v3.x, sectors[i].floorHeight, sectors[i].v3.y,
             });
-            uvs.add(new float[]{
-                    sectors[i].v0.x, sectors[i].v0.y,
-                    sectors[i].v1.x, sectors[i].v1.y,
-                    sectors[i].v2.x, sectors[i].v2.y,
-                    sectors[i].v3.x, sectors[i].v3.y,
-            });
+            if (!sectors[i].stretchTexture) {
+                uvs.add(new float[]{
+                        sectors[i].v0.x, sectors[i].v0.y,
+                        sectors[i].v1.x, sectors[i].v1.y,
+                        sectors[i].v2.x, sectors[i].v2.y,
+                        sectors[i].v3.x, sectors[i].v3.y,
+                });
+            } else{
+                uvs.add(new float[]{
+                        0, 1,
+                        0, 0,
+                        1, 1,
+                        1, 0,
+                });
+            }
             normals.add(new float[]{
                     sectors[i].normals[0].x, sectors[i].normals[0].y, sectors[i].normals[0].z,
                     sectors[i].normals[1].x, sectors[i].normals[1].y, sectors[i].normals[1].z,
@@ -58,7 +68,13 @@ public class Level {
                     1, 2, 3
             });
             rawModel.add(loader.loadToVAO(positions.get(i), uvs.get(i), normals.get(i), index.get(i)));
-            texture.add(new ModelTexture(loader.loadTexture("null")));
+            try {
+                texture.add(new ModelTexture(loader.loadTexture(sectors[i].texture)));
+            } catch (Exception e){
+                e.printStackTrace();
+                System.out.println("Texture location does not exist. Please check code and verify texture exists.");
+                texture.add(new ModelTexture(loader.loadTexture("null")));
+            }
         }
     }
 
@@ -92,6 +108,11 @@ class Sector {
     public float floorHeight;
     public float ceilingHeight;
 
+    public final String texture;
+    public final boolean stretchTexture;
+
+    public SectorType sectorType = SectorType.sector_static;
+
     public final int[][] index = {
         {0, 1, 2},
         {2, 1, 3},
@@ -99,13 +120,16 @@ class Sector {
 
     public final Vector3f[] normals;
 
-    public Sector(Vector2f v0, Vector2f v1, Vector2f v2, Vector2f v3, float floorHeight, float ceilingHeight){
+    public Sector(Vector2f v0, Vector2f v1, Vector2f v2, Vector2f v3, float floorHeight, float ceilingHeight, String texture, boolean stretchTexture, SectorType sectorType){
         this.v0 = v0;
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
         this.floorHeight = floorHeight;
         this.ceilingHeight = ceilingHeight;
+        this.sectorType = sectorType;
+        this.texture = texture;
+        this.stretchTexture = stretchTexture;
 
         normals = new Vector3f[4];
         for (int i = 0; i < normals.length; i++) {

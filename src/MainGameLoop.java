@@ -1,3 +1,4 @@
+import components.QuakeLikePlayer;
 import entities.Camera;
 import entities.Entity;
 import entities.EntityManager;
@@ -41,10 +42,12 @@ public class MainGameLoop {
 		guis.add(guiTransparent);
 		GUIRenderer guiRenderer = new GUIRenderer(loader);
 		EntityManager entityManager = new EntityManager(renderer, shader, loader);
-		Entity player = entityManager.entities.get(entityManager.getEntityByName("test"));
+		Entity player = entityManager.entities.get(entityManager.getEntityByName("Player"));
 		SourcePool sourcePool = SourcePool.getSourcePool();
 		sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(3, 0, 3), 1, 1, Pool.entity);
 		Level.generateSectorModels(loader);
+
+		float height = player.getComponent(QuakeLikePlayer.class).height;
 
 		while(!Display.isCloseRequested()) {
 			boolean renderWireframe = Keyboard.isKeyDown(Keyboard.KEY_TAB);
@@ -66,13 +69,15 @@ public class MainGameLoop {
 			shader.loadViewMatrix(camera);
 
 			camera.getPosition().x = player.getPosition().x;
-			camera.getPosition().y = player.getPosition().y + 16;
-			camera.getPosition().z = player.getPosition().z + 20;
+			camera.getPosition().y = player.getPosition().y + height;
+			camera.getPosition().z = player.getPosition().z;
+			camera.yaw = -player.getRotY();
 			Audio.setListenerData(camera.getPosition());
 
 			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), 1, 0.7f, 1.8f);
 			shader.setDirectionalLight(new Vector3f(-0.2f, -1, -0.3f), new Vector3f(0.6f, 0.6f, 0.9f), new Vector3f(.3f, .3f, .5f), new Vector3f(0.2f, 0.2f, 0.2f));
 			shader.setUniformVector("viewPos", camera.getPosition());
+			shader.loadViewMatrix(camera);
 			Level.renderSectorModel(renderer, shader);
 			entityManager.renderEntities();
 			guiRenderer.render(guis);

@@ -114,7 +114,7 @@ public class EntityManager {
         }
     }
 
-    private Component getComponent(String component) {
+    public Component getComponent(String component) {
         System.out.println(component);
         try {
             Class<?> _class = Class.forName("components." + component);
