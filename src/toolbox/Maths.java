@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.Math.sqrt;
+
 public class Maths {
 	public static Matrix4f createTransformationMatrix(Vector2f translation, Vector2f scale) {
 		Matrix4f matrix = new Matrix4f();
@@ -55,9 +57,15 @@ public class Maths {
 		w.x = (a.x * s.x + s.w * s.y - p.x * s.x) / (s.z * s.y - (b.x-a.x) * s.x);
 		w.y = (s.w- w.x * s.z) / s.x;
 
-		if (w.x >= 0 && w.y >= 0 && (w.x + w.y) <= 1)
-			return true;
-		else
-			return false;
+        return w.x >= 0 && w.y >= 0 && (w.x + w.y) <= 1;
+	}
+
+	//this code is taken from https://www.jeffreythompson.org/collision-detection/line-circle.php
+	public static boolean pointCircleCollision(Vector2f point, Vector2f circle, float radius){
+		float distX = point.x - circle.x;
+		float distY = point.y - circle.y;
+		float distance = (float) sqrt((distX*distX) + (distY*distY));
+
+		return distance <= radius;
 	}
 }

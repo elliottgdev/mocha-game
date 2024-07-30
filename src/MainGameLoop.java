@@ -22,6 +22,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static experimental.Maths.*;
+
 public class MainGameLoop {
 
 	public static void main(String[] args) throws FileNotFoundException {

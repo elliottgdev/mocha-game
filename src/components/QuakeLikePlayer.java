@@ -2,6 +2,7 @@ package components;
 
 import entities.Entity;
 import experimental.levels.Level;
+import experimental.levels.Sector;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector2f;
@@ -10,6 +11,8 @@ import org.lwjgl.util.vector.Vector3f;
 import java.security.Key;
 
 import static com.sun.javafx.util.Utils.clamp;
+import static experimental.Maths.lineCircleCollision;
+import static experimental.levels.Level.getSectors;
 import static java.lang.Math.*;
 import static org.lwjgl.util.vector.Vector2f.dot;
 import static renderEngine.DisplayManager.getDeltaTime;
@@ -18,16 +21,19 @@ public class QuakeLikePlayer implements Component{
     private Vector2f forwardVector = new Vector2f(), sideVector = new Vector2f();
     private Vector2f wishDir = new Vector2f();
     private Vector2f velocity = new Vector2f();
-    private float speed = 25f;
-    private float accel = 25f * speed;
-    private float friction = 1f;
-    private float gravity = 1.5f;
+    private final float speed = 25f;
+    private final float friction = 1f;
+    private final float gravity = 0.9f;
+    private final float jumpForce = 0.2f;
+    private final float playerRadius = 1f;
     private float yVelocity = 0;
     public final float height = 2.5f;
     private boolean grounded = true;
     private Entity player;
 
     Vector2f vel = new Vector2f();
+
+    private Sector[] sectors = getSectors();
 
     @Override
     public void awake(Entity entity) {
@@ -43,6 +49,9 @@ public class QuakeLikePlayer implements Component{
         if (grounded){
             vel = groundAcceleration();
         }
+        else {
+            vel = airAcceleration();
+        }
 
         entity.setPosition(new Vector3f(entity.getPosition().x + (vel.x), entity.getPosition().y, entity.getPosition().z + (vel.y)));
 
@@ -54,6 +63,25 @@ public class QuakeLikePlayer implements Component{
     private void gravity(){
         player.getPosition().y += yVelocity;
         Vector2f sectorHeights = Level.getFloorHeight(new Vector2f(player.getPosition().x, player.getPosition().z));
+
+        for (Sector sector : sectors){
+            if (sector.floorHeight > sectorHeights.x) {
+                if (lineCircleCollision(sector.v0, sector.v1, new Vector2f(player.getPosition().x, player.getPosition().z), playerRadius)) {
+                    sectorHeights.x = sector.floorHeight;
+                    sectorHeights.y = sector.ceilingHeight;
+                } else if (lineCircleCollision(sector.v1, sector.v3, new Vector2f(player.getPosition().x, player.getPosition().z), playerRadius)) {
+                    sectorHeights.x = sector.floorHeight;
+                    sectorHeights.y = sector.ceilingHeight;
+                } else if (lineCircleCollision(sector.v3, sector.v2, new Vector2f(player.getPosition().x, player.getPosition().z), playerRadius)) {
+                    sectorHeights.x = sector.floorHeight;
+                    sectorHeights.y = sector.ceilingHeight;
+                } else if (lineCircleCollision(sector.v0, sector.v2, new Vector2f(player.getPosition().x, player.getPosition().z), playerRadius)) {
+                    sectorHeights.x = sector.floorHeight;
+                    sectorHeights.y = sector.ceilingHeight;
+                }
+            }
+        }
+
         if (player.getPosition().y > sectorHeights.x){
             yVelocity -= gravity * getDeltaTime();
             grounded = false;
@@ -67,21 +95,27 @@ public class QuakeLikePlayer implements Component{
     private void movementInput(){
         forwardVector = new Vector2f(0, 0);
         sideVector = new Vector2f(0, 0);
+
         float inputFactorX = 0;
         float inputFactorY = 0;
 
         if (Keyboard.isKeyDown(Keyboard.KEY_W)){
-            inputFactorY -= 1;
+            inputFactorY -= 1f;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)){
-            inputFactorY += 1;
+            inputFactorY += 1f;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)){
-            inputFactorX -= 1;
+            inputFactorX -= 1f;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)){
-            inputFactorX += 1;
+            inputFactorX += 1f;
         }
+
+        if (grounded && Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
+            yVelocity = jumpForce;
+        }
+
         forwardVector = new Vector2f((float) (inputFactorY * sin(toRadians(player.getRotY()))), (float) (inputFactorY * cos(toRadians(player.getRotY()))));
         sideVector = new Vector2f((float) (inputFactorX * sin(toRadians(player.getRotY() + 90))), (float) (inputFactorX * cos(toRadians(player.getRotY() + 90))));
     }
@@ -97,7 +131,13 @@ public class QuakeLikePlayer implements Component{
         velocity = friction(velocity);
 
         float currentSpeed = dot(velocity, wishDir);
-        float addSpeed = clamp((speed - currentSpeed) * getDeltaTime(), 0, accel * getDeltaTime());
+        float addSpeed = clamp((speed - currentSpeed) * getDeltaTime(), 0, getDeltaTime());
+        return new Vector2f(velocity.x + addSpeed * wishDir.x, velocity.y + addSpeed * wishDir.y);
+    }
+
+    private Vector2f airAcceleration(){
+        float currentSpeed = dot(velocity, wishDir);
+        float addSpeed = clamp((speed - currentSpeed) * getDeltaTime(), 0, getDeltaTime());
         return new Vector2f(velocity.x + addSpeed * wishDir.x, velocity.y + addSpeed * wishDir.y);
     }
 
