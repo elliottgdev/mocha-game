@@ -8,7 +8,9 @@ import experimental.audio.SourcePool;
 import experimental.levels.Level;
 import guis.GUIRenderer;
 import guis.GUITexture;
+import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.opengl.Display;
@@ -26,9 +28,11 @@ import static experimental.Maths.*;
 
 public class MainGameLoop {
 
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException, LWJGLException {
 		DisplayManager.createDisplay();
 		Audio.init();
+		Mouse.create();
+		Mouse.setGrabbed(true);
 		Audio.setListenerData(new Vector3f(0, 0, 0));
 		AL10.alDistanceModel(AL11.AL_LINEAR_DISTANCE_CLAMPED);
 
@@ -74,6 +78,7 @@ public class MainGameLoop {
 			camera.getPosition().y = player.getPosition().y + height;
 			camera.getPosition().z = player.getPosition().z;
 			camera.yaw = -player.getRotY();
+			camera.pitch = player.getComponent(QuakeLikePlayer.class).pitch;
 			Audio.setListenerData(camera.getPosition());
 
 			shader.setPointLight(0, new Vector3f(2, 1, 2), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), new Vector3f(5, 0, 0), 1, 0.7f, 1.8f);
@@ -87,6 +92,7 @@ public class MainGameLoop {
 			DisplayManager.updateDisplay();
 		}
 
+		Mouse.destroy();
 		sourcePool.cleanUp();
 		Audio.cleanUp();
 		guiRenderer.cleanUp();

@@ -19,7 +19,7 @@ public class Level {
             new Sector(new Vector2f(0, 3), new Vector2f(0, 0), new Vector2f(12, 3), new Vector2f(12, 0), 0.5f, 7f, "test", false ,SectorType.sector_static, "test", "test", "test", "test", 2),
             new Sector(new Vector2f(0, 0), new Vector2f(0, -3), new Vector2f(12, 0), new Vector2f(12, -3), 1.5f, 7f, "grass", true, SectorType.sector_static, "grass", "grass", "grass", "grass", 2),
             new Sector(new Vector2f(-4, 0), new Vector2f(-4, -3), new Vector2f(0, 0), new Vector2f(0, -3), 4f, 7f, "test", true, SectorType.sector_static, "white", "test", "null", "monkey", 2),
-            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 1.5f, "null", false, SectorType.sector_static, "null", "null", "null", "null", 0),
+            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 1.5f, "white", true, SectorType.sector_static, "null", "null", "null", "null", 0),
     };
     private static List<float[]> positions = new ArrayList<>();
     private static List<float[]> uvs = new ArrayList<>();
@@ -34,39 +34,46 @@ public class Level {
         normals = new ArrayList<>();
         index = new ArrayList<>();
         for (int i = 0; i < sectors.length; i++) {
-            positions.add(new float[]{
-                    sectors[i].v0.x, sectors[i].floorHeight, sectors[i].v0.y,
-                    sectors[i].v1.x, sectors[i].floorHeight, sectors[i].v1.y,
-                    sectors[i].v2.x, sectors[i].floorHeight, sectors[i].v2.y,
-                    sectors[i].v3.x, sectors[i].floorHeight, sectors[i].v3.y,
-            });
-            if (!sectors[i].stretchTexture) {
-                uvs.add(new float[]{
-                        sectors[i].v0.x, sectors[i].v0.y,
-                        sectors[i].v1.x, sectors[i].v1.y,
-                        sectors[i].v2.x, sectors[i].v2.y,
-                        sectors[i].v3.x, sectors[i].v3.y,
+            //floor face
+            if (sectors[i].texture != "null") {
+                positions.add(new float[]{
+                        sectors[i].v0.x, sectors[i].floorHeight, sectors[i].v0.y,
+                        sectors[i].v1.x, sectors[i].floorHeight, sectors[i].v1.y,
+                        sectors[i].v2.x, sectors[i].floorHeight, sectors[i].v2.y,
+                        sectors[i].v3.x, sectors[i].floorHeight, sectors[i].v3.y,
                 });
-            } else{
-                uvs.add(new float[]{
-                        0, 1,
-                        0, 0,
-                        1, 1,
-                        1, 0,
+                if (!sectors[i].stretchTexture) {
+                    uvs.add(new float[]{
+                            sectors[i].v0.x, sectors[i].v0.y,
+                            sectors[i].v1.x, sectors[i].v1.y,
+                            sectors[i].v2.x, sectors[i].v2.y,
+                            sectors[i].v3.x, sectors[i].v3.y,
+                    });
+                } else {
+                    uvs.add(new float[]{
+                            0, 1,
+                            0, 0,
+                            1, 1,
+                            1, 0,
+                    });
+                }
+                normals.add(new float[]{
+                        sectors[i].normals[0].x, sectors[i].normals[0].y, sectors[i].normals[0].z,
+                        sectors[i].normals[1].x, sectors[i].normals[1].y, sectors[i].normals[1].z,
+                        sectors[i].normals[2].x, sectors[i].normals[2].y, sectors[i].normals[2].z,
+                        sectors[i].normals[3].x, sectors[i].normals[3].y, sectors[i].normals[3].z,
+
+                });
+                index.add(new int[]{
+                        0, 2, 1,
+                        1, 2, 3
                 });
             }
-            normals.add(new float[]{
-                    sectors[i].normals[0].x, sectors[i].normals[0].y, sectors[i].normals[0].z,
-                    sectors[i].normals[1].x, sectors[i].normals[1].y, sectors[i].normals[1].z,
-                    sectors[i].normals[2].x, sectors[i].normals[2].y, sectors[i].normals[2].z,
-                    sectors[i].normals[3].x, sectors[i].normals[3].y, sectors[i].normals[3].z,
+            try {
+                rawModel.add(loader.loadToVAO(positions.get(i), uvs.get(i), normals.get(i), index.get(i)));
+            } catch (Exception ignored) {
 
-            });
-            index.add(new int[]{
-                    0, 2, 1,
-                    1, 2, 3
-            });
-            rawModel.add(loader.loadToVAO(positions.get(i), uvs.get(i), normals.get(i), index.get(i)));
+            }
             try {
                 texture.add(new ModelTexture(loader.loadTexture(sectors[i].texture)));
             } catch (Exception e){
@@ -79,8 +86,12 @@ public class Level {
 
     public static void renderSectorModel(Renderer renderer, StaticShader shader){
         for (int i = 0; i < sectors.length; i++) {
-            shader.setMaterial(new Vector3f(1, 1, 1), new Vector3f(1, 1, 1), new Vector3f(1, 1, 1), 1, true);
-            renderer.render(new TexturedModel(rawModel.get(i), texture.get(i)),new Vector3f(0, 0, 0), 1, shader);
+            try {
+                shader.setMaterial(new Vector3f(1, 1, 1), new Vector3f(1, 1, 1), new Vector3f(1, 1, 1), 1, true);
+                renderer.render(new TexturedModel(rawModel.get(i), texture.get(i)),new Vector3f(0, 0, 0), 1, shader);
+            } catch (Exception e){
+
+            }
         }
     }
 

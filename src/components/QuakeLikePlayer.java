@@ -5,6 +5,7 @@ import experimental.levels.Level;
 import experimental.levels.Sector;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -21,17 +22,20 @@ public class QuakeLikePlayer implements Component{
     private Vector2f forwardVector = new Vector2f(), sideVector = new Vector2f();
     private Vector2f wishDir = new Vector2f();
     private Vector2f velocity = new Vector2f();
-    private final float speed = 25f;
+    private final float speed = 12f;
     private final float friction = 1f;
-    private final float gravity = 0.9f;
-    private final float jumpForce = 0.2f;
-    private final float playerRadius = 1f;
+    private final float gravity = 55f;
+    private final float jumpForce = 15f;
+    private final float playerRadius = 0.5f;
     private float yVelocity = 0;
     public final float height = 2.5f;
+    private float sensitivity = 0.5f;
     private boolean grounded = true;
     private Entity player;
 
     Vector2f vel = new Vector2f();
+    public float pitch = 0;
+    private float lookClamp = 90;
 
     private Sector[] sectors = getSectors();
 
@@ -53,15 +57,17 @@ public class QuakeLikePlayer implements Component{
             vel = airAcceleration();
         }
 
-        entity.setPosition(new Vector3f(entity.getPosition().x + (vel.x), entity.getPosition().y, entity.getPosition().z + (vel.y)));
+        entity.getPosition().x += (vel.x);
+        entity.getPosition().z += (vel.y);
 
-        float turnSpeed = 200;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) entity.setRotY(entity.getRotY() + turnSpeed * getDeltaTime());
-        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) entity.setRotY(entity.getRotY() - turnSpeed * getDeltaTime());
+        entity.setRotY(entity.getRotY() - Mouse.getDX() * sensitivity);
+        pitch -= Mouse.getDY() * sensitivity;
+
+        if (pitch >= 90) pitch = 90;
+        if (pitch <= -90) pitch = -90;
     }
 
     private void gravity(){
-        player.getPosition().y += yVelocity;
         Vector2f sectorHeights = Level.getFloorHeight(new Vector2f(player.getPosition().x, player.getPosition().z));
 
         for (Sector sector : sectors){
@@ -82,10 +88,11 @@ public class QuakeLikePlayer implements Component{
             }
         }
 
+        yVelocity -= gravity * getDeltaTime();
+        player.getPosition().y += yVelocity * getDeltaTime();
         if (player.getPosition().y > sectorHeights.x){
-            yVelocity -= gravity * getDeltaTime();
             grounded = false;
-        } else if (player.getPosition().y <= sectorHeights.x){
+        } else {
             yVelocity = 0;
             player.getPosition().y = sectorHeights.x;
             grounded = true;
@@ -114,6 +121,8 @@ public class QuakeLikePlayer implements Component{
 
         if (grounded && Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
             yVelocity = jumpForce;
+            grounded = false;
+            player.getComponent(AudioSource.class).play("res/bounce.wav");
         }
 
         forwardVector = new Vector2f((float) (inputFactorY * sin(toRadians(player.getRotY()))), (float) (inputFactorY * cos(toRadians(player.getRotY()))));
