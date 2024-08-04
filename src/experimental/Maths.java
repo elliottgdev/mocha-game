@@ -42,4 +42,33 @@ public class Maths {
         float distY = origin.y - point.y;
         return (float) sqrt((distX * distX) + (distY * distY));
     }
+
+    public static Vector3f[] calculateTriangleNormals(Vector3f[] verticies, int[] indices){
+        Vector3f[] normals = new Vector3f[3];
+        for (int i = 0; i < normals.length; i++) {
+            normals[i] = new Vector3f(0, 0, 0);
+        }
+
+        Vector3f[] edge = new Vector3f[] {
+                new Vector3f(verticies[1].x - verticies[2].x, 0, verticies[1].y - verticies[2].y),
+                new Vector3f(verticies[1].x - verticies[0].x, 0, verticies[1].y - verticies[0].y),
+        };
+
+        Vector3f norm = new Vector3f(
+                edge[0].y * edge[1].z - edge[0].z * edge[1].y,
+                edge[0].z * edge[1].x - edge[0].x * edge[1].z,
+                edge[0].x * edge[1].y - edge[0].y * edge[1].x
+
+        );
+
+        normals[indices[0]] = norm;
+        normals[indices[1]] = norm;
+        normals[indices[2]] = norm;
+
+        for (Vector3f normal : normals) {
+            normal.normalise(normal);
+        }
+
+        return normals;
+    }
 }

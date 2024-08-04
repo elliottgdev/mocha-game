@@ -33,6 +33,12 @@ public class Entity {
 		}
 	}
 
+	public void tick(){
+		for (Component component : components){
+			component.tick(this);
+		}
+	}
+
 	public void addComponent(Component component){
 		components.add(component);
 	}

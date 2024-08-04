@@ -58,10 +58,10 @@ public class Level {
                     });
                 }
                 normals.add(new float[]{
-                        sectors[i].normals[0].x, sectors[i].normals[0].y, sectors[i].normals[0].z,
-                        sectors[i].normals[1].x, sectors[i].normals[1].y, sectors[i].normals[1].z,
-                        sectors[i].normals[2].x, sectors[i].normals[2].y, sectors[i].normals[2].z,
-                        sectors[i].normals[3].x, sectors[i].normals[3].y, sectors[i].normals[3].z,
+                        sectors[i].floorNormals1[0].x, sectors[i].floorNormals1[0].y, sectors[i].floorNormals1[0].z,
+                        sectors[i].floorNormals1[1].x, sectors[i].floorNormals1[1].y, sectors[i].floorNormals1[1].z,
+                        sectors[i].floorNormals1[2].x, sectors[i].floorNormals1[2].y, sectors[i].floorNormals1[2].z,
+                        sectors[i].floorNormals2[2].x, sectors[i].floorNormals2[2].y, sectors[i].floorNormals2[2].z,
 
                 });
                 index.add(new int[]{

@@ -3,6 +3,8 @@ package experimental.levels;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
+import static experimental.Maths.calculateTriangleNormals;
+
 public class Sector {
     public final Vector2f v0;
     public final Vector2f v1;
@@ -25,7 +27,8 @@ public class Sector {
             {2, 1, 3},
     };
 
-    public final Vector3f[] normals;
+    public final Vector3f[] floorNormals1;
+    public final Vector3f[] floorNormals2;
 
     public Sector(Vector2f v0, Vector2f v1, Vector2f v2, Vector2f v3, float floorHeight, float ceilingHeight, String texture, boolean stretchTexture, SectorType sectorType, String fWall, String bWall, String lWall, String rWall, int walls) {
         this.v0 = v0;
@@ -43,34 +46,7 @@ public class Sector {
         this.rWall = rWall;
         this.walls = walls;
 
-        normals = new Vector3f[4];
-        for (int i = 0; i < normals.length; i++) {
-            normals[i] = new Vector3f(0, 0, 0);
-        }
-
-        Vector3f[] edge = {
-                new Vector3f(v1.x - v2.x, 0, v1.y - v2.y),
-                new Vector3f(v1.x - v0.x, 0, v1.y - v0.y),
-                new Vector3f(v3.x - v2.x, 0, v3.y - v2.y),
-        };
-
-        Vector3f triangle1norm = new Vector3f(
-                edge[0].y * edge[1].z - edge[0].z * edge[1].y,
-                edge[0].z * edge[1].x - edge[0].x * edge[1].z,
-                edge[0].x * edge[1].y - edge[0].y * edge[1].x
-        );
-        Vector3f triangle2norm = new Vector3f(
-                edge[0].y * edge[2].z - edge[0].z * edge[2].y,
-                edge[0].z * edge[2].x - edge[0].x * edge[2].z,
-                edge[0].x * edge[2].y - edge[0].y * edge[2].x
-        );
-        normals[index[0][0]] = triangle1norm;
-        normals[index[0][1]] = triangle1norm;
-        normals[index[0][2]] = triangle1norm;
-        normals[index[1][2]] = triangle2norm;
-
-        for (Vector3f normal : normals) {
-            normal.normalise(normal);
-        }
+        floorNormals1 = calculateTriangleNormals(new Vector3f[]{new Vector3f(v0.x, floorHeight, v0.y), new Vector3f(v1.x, floorHeight, v1.y), new Vector3f(v2.x, floorHeight, v2.y)}, new int[]{0, 2, 1});
+        floorNormals2 = calculateTriangleNormals(new Vector3f[]{new Vector3f(v1.x, floorHeight, v1.y), new Vector3f(v2.x, floorHeight, v2.y), new Vector3f(v3.x, floorHeight, v3.y)}, new int[]{0, 1, 2});
     }
 }

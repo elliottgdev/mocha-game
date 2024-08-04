@@ -24,8 +24,8 @@ public class QuakeLikePlayer implements Component{
     private Vector2f velocity = new Vector2f();
     private final float speed = 12f;
     private final float friction = 1f;
-    private final float gravity = 55f;
-    private final float jumpForce = 15f;
+    private final float gravity = 0.02f;
+    private final float jumpForce = 0.36f;
     private final float playerRadius = 0.5f;
     private float yVelocity = 0;
     public final float height = 2.5f;
@@ -35,7 +35,7 @@ public class QuakeLikePlayer implements Component{
 
     Vector2f vel = new Vector2f();
     public float pitch = 0;
-    private float lookClamp = 90;
+    private final float lookClamp = 90;
 
     private Sector[] sectors = getSectors();
 
@@ -46,7 +46,6 @@ public class QuakeLikePlayer implements Component{
 
     @Override
     public void update(Entity entity) {
-        gravity();
         movementInput();
         getWishDir();
 
@@ -63,8 +62,13 @@ public class QuakeLikePlayer implements Component{
         entity.setRotY(entity.getRotY() - Mouse.getDX() * sensitivity);
         pitch -= Mouse.getDY() * sensitivity;
 
-        if (pitch >= 90) pitch = 90;
-        if (pitch <= -90) pitch = -90;
+        if (pitch >= lookClamp) pitch = 90;
+        if (pitch <= -lookClamp) pitch = -90;
+    }
+
+    @Override
+    public void tick(Entity entity) {
+        gravity();
     }
 
     private void gravity(){
@@ -88,8 +92,8 @@ public class QuakeLikePlayer implements Component{
             }
         }
 
-        yVelocity -= gravity * getDeltaTime();
-        player.getPosition().y += yVelocity * getDeltaTime();
+        yVelocity -= gravity;
+        player.getPosition().y += yVelocity;
         if (player.getPosition().y > sectorHeights.x){
             grounded = false;
         } else {

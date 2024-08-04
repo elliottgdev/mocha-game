@@ -108,9 +108,25 @@ public class EntityManager {
         }
     }
 
+    //code taken from https://stackoverflow.com/questions/63515194/how-to-run-a-code-60-times-per-second-in-java
+    long lastTime = System.nanoTime();
+    //edit tick rate here
+    final double ns = 1000000000.0 / 60.0;
+    double delta = 0;
+
     public void update(){
         for (Entity entity : entities){
             entity.update();
+        }
+
+        long now = System.nanoTime();
+        delta += (now - lastTime) / ns;
+        lastTime = now;
+        while(delta >= 1) {
+            for (Entity entity : entities) {
+                entity.tick();
+            }
+            delta--;
         }
     }
 

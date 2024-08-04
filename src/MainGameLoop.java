@@ -52,7 +52,6 @@ public class MainGameLoop {
 		SourcePool sourcePool = SourcePool.getSourcePool();
 		sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(3, 0, 3), 1, 1, Pool.entity);
 		Level.generateSectorModels(loader);
-
 		float height = player.getComponent(QuakeLikePlayer.class).height;
 
 		while(!Display.isCloseRequested()) {

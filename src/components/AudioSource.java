@@ -12,6 +12,11 @@ public class AudioSource implements Component{
     public void update(Entity entity) {}
 
     @Override
+    public void tick(Entity entity) {
+
+    }
+
+    @Override
     public void awake(Entity entity) {
         this.entity = entity;
         System.out.println("YIPPEE");
