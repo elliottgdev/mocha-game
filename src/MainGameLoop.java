@@ -62,6 +62,11 @@ public class MainGameLoop {
 				GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
 			}
 
+			if (Keyboard.isKeyDown(Keyboard.KEY_Z))
+				Mouse.setGrabbed(false);
+			if (Keyboard.isKeyDown(Keyboard.KEY_X))
+				Mouse.setGrabbed(true);
+
 			if(Keyboard.isKeyDown(Keyboard.KEY_Q))
 				sourcePool.playBufferOnSourcePool("res/bounce.wav", new Vector3f(2, 0, 3), 1, 1, Pool.entity);
 			if(Keyboard.isKeyDown(Keyboard.KEY_E))

@@ -31,6 +31,7 @@ public class QuakeLikePlayer implements Component{
     public final float height = 2.5f;
     private float sensitivity = 0.5f;
     private boolean grounded = true;
+    Vector2f sectorHeights = new Vector2f();
     private Entity player;
 
     Vector2f vel = new Vector2f();
@@ -56,6 +57,11 @@ public class QuakeLikePlayer implements Component{
             vel = airAcceleration();
         }
 
+        if (entity.getPosition().y >= sectorHeights.y - height){
+            entity.getPosition().y = sectorHeights.y - height;
+            yVelocity = 0;
+        }
+
         entity.getPosition().x += (vel.x);
         entity.getPosition().z += (vel.y);
 
@@ -72,7 +78,7 @@ public class QuakeLikePlayer implements Component{
     }
 
     private void gravity(){
-        Vector2f sectorHeights = Level.getFloorHeight(new Vector2f(player.getPosition().x, player.getPosition().z));
+        sectorHeights = Level.getFloorHeight(new Vector2f(player.getPosition().x, player.getPosition().z));
 
         for (Sector sector : sectors){
             if (sector.floorHeight > sectorHeights.x) {
@@ -90,6 +96,7 @@ public class QuakeLikePlayer implements Component{
                     sectorHeights.y = sector.ceilingHeight;
                 }
             }
+
         }
 
         yVelocity -= gravity;

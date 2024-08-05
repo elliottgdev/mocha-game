@@ -19,7 +19,7 @@ public class Level {
             new Sector(new Vector2f(0, 3), new Vector2f(0, 0), new Vector2f(12, 3), new Vector2f(12, 0), 0.5f, 7f, "test", false ,SectorType.sector_static, "test", "test", "test", "test", 2),
             new Sector(new Vector2f(0, 0), new Vector2f(0, -3), new Vector2f(12, 0), new Vector2f(12, -3), 1.5f, 7f, "grass", true, SectorType.sector_static, "grass", "grass", "grass", "grass", 2),
             new Sector(new Vector2f(-4, 0), new Vector2f(-4, -3), new Vector2f(0, 0), new Vector2f(0, -3), 4f, 7f, "test", true, SectorType.sector_static, "white", "test", "null", "monkey", 2),
-            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 1.5f, "white", true, SectorType.sector_static, "null", "null", "null", "null", 0),
+            new Sector(new Vector2f(-4, 3), new Vector2f(-4, 0), new Vector2f(0, 3), new Vector2f(0, 0), 1f, 8f, "white", true, SectorType.sector_static, "null", "null", "null", "null", 0),
     };
     private static List<float[]> positions = new ArrayList<>();
     private static List<float[]> uvs = new ArrayList<>();
@@ -27,6 +27,7 @@ public class Level {
     private static List<int[]> index = new ArrayList<>();
     private static List<RawModel> rawModel = new ArrayList<>();
     private static List<ModelTexture> texture = new ArrayList<>();
+
 
     public static void generateSectorModels(Loader loader){
         positions = new ArrayList<>();
@@ -41,9 +42,17 @@ public class Level {
                         sectors[i].v1.x, sectors[i].floorHeight, sectors[i].v1.y,
                         sectors[i].v2.x, sectors[i].floorHeight, sectors[i].v2.y,
                         sectors[i].v3.x, sectors[i].floorHeight, sectors[i].v3.y,
+                        sectors[i].v0.x, sectors[i].ceilingHeight, sectors[i].v0.y,
+                        sectors[i].v1.x, sectors[i].ceilingHeight, sectors[i].v1.y,
+                        sectors[i].v2.x, sectors[i].ceilingHeight, sectors[i].v2.y,
+                        sectors[i].v3.x, sectors[i].ceilingHeight, sectors[i].v3.y,
                 });
                 if (!sectors[i].stretchTexture) {
                     uvs.add(new float[]{
+                            sectors[i].v0.x, sectors[i].v0.y,
+                            sectors[i].v1.x, sectors[i].v1.y,
+                            sectors[i].v2.x, sectors[i].v2.y,
+                            sectors[i].v3.x, sectors[i].v3.y,
                             sectors[i].v0.x, sectors[i].v0.y,
                             sectors[i].v1.x, sectors[i].v1.y,
                             sectors[i].v2.x, sectors[i].v2.y,
@@ -55,9 +64,17 @@ public class Level {
                             0, 0,
                             1, 1,
                             1, 0,
+                            0, 1,
+                            0, 0,
+                            1, 1,
+                            1, 0,
                     });
                 }
                 normals.add(new float[]{
+                        sectors[i].floorNormals1[0].x, sectors[i].floorNormals1[0].y, sectors[i].floorNormals1[0].z,
+                        sectors[i].floorNormals1[1].x, sectors[i].floorNormals1[1].y, sectors[i].floorNormals1[1].z,
+                        sectors[i].floorNormals1[2].x, sectors[i].floorNormals1[2].y, sectors[i].floorNormals1[2].z,
+                        sectors[i].floorNormals2[2].x, sectors[i].floorNormals2[2].y, sectors[i].floorNormals2[2].z,
                         sectors[i].floorNormals1[0].x, sectors[i].floorNormals1[0].y, sectors[i].floorNormals1[0].z,
                         sectors[i].floorNormals1[1].x, sectors[i].floorNormals1[1].y, sectors[i].floorNormals1[1].z,
                         sectors[i].floorNormals1[2].x, sectors[i].floorNormals1[2].y, sectors[i].floorNormals1[2].z,
@@ -66,8 +83,11 @@ public class Level {
                 });
                 index.add(new int[]{
                         0, 2, 1,
-                        1, 2, 3
+                        1, 2, 3,
+                        5, 6, 4,
+                        7, 6, 5
                 });
+
             }
             try {
                 rawModel.add(loader.loadToVAO(positions.get(i), uvs.get(i), normals.get(i), index.get(i)));

@@ -27,8 +27,7 @@ public class Sector {
             {2, 1, 3},
     };
 
-    public final Vector3f[] floorNormals1;
-    public final Vector3f[] floorNormals2;
+    public final Vector3f[] floorNormals1, floorNormals2;
 
     public Sector(Vector2f v0, Vector2f v1, Vector2f v2, Vector2f v3, float floorHeight, float ceilingHeight, String texture, boolean stretchTexture, SectorType sectorType, String fWall, String bWall, String lWall, String rWall, int walls) {
         this.v0 = v0;
